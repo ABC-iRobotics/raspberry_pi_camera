@@ -1,7 +1,7 @@
 <launch>  
   <!-- Name of the yolo model to use -->
-  <arg name="width" default="3280" />
-  <arg name="height" default="2464" />
+  <arg name="width" default="1920" />
+  <arg name="height" default="1080" />
 
   <!-- Start the actual detection server -->
   <node name="raspberry_pi_camera_server" pkg="raspberry_pi_camera" type="raspberry_pi_camera_server.py" respawn="false" output="screen">

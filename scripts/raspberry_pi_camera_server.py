@@ -8,24 +8,27 @@ from bark_msgs.msg import RaspberryPiCameraAction, RaspberryPiCameraResult
 import numpy as np
 import time
 import picamera
+from picamera.array import PiRGBArray
 
 class RaspberryPiCameraServer:
-  def __init__(self, width=3280, height=2464):
+  def __init__(self, width=1920, height=1080):
     self.width = width
     self.height = height
     self.camera = picamera.PiCamera()
     self.camera.resolution = (width, height)
-    self.camera.framerate = 24
     time.sleep(2)
+    self.rawCapture = PiRGBArray(self.camera)
 
     self.bridge = CvBridge()
     self.server = actionlib.SimpleActionServer('raspberry_pi_camera', RaspberryPiCameraAction, self.execute, False)
     self.server.start()
 
+  def __del__(self):
+    self.camera.close()
+
   def execute(self, goal):
-    image = np.empty((self.width * self.height * 3,), dtype=np.uint8)
-    self.camera.capture(image, 'bgr')
-    image = image.reshape((self.height, self.width, 3))
+    self.camera.capture(self.rawCapture, 'bgr')
+    image = self.rawCapture.array
 
     result = RaspberryPiCameraResult()
     result.image = self.bridge.cv2_to_imgmsg(image, encoding='bgr8')
