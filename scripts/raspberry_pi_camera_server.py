@@ -29,7 +29,7 @@ class RaspberryPiCameraServer:
   def execute(self, goal):
     self.camera.capture(self.rawCapture, 'bgr')
     image = self.rawCapture.array
-
+    image = np.reshape(image, (self.height, self.width, 3))
     result = RaspberryPiCameraResult()
     result.image = self.bridge.cv2_to_imgmsg(image, encoding='bgr8')
     
