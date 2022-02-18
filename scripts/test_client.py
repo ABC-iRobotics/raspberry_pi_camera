@@ -9,7 +9,7 @@ from bark_msgs.msg import RaspberryPiCameraAction, RaspberryPiCameraGoal
 if __name__ == '__main__':
     rospy.init_node('raspberry_pi_camera_client')
 
-    client = actionlib.SimpleActionClient('bounding_box_detection', RaspberryPiCameraAction)
+    client = actionlib.SimpleActionClient('raspberry_pi_camera', RaspberryPiCameraAction)
     client.wait_for_server()
     bridge = CvBridge()
 
