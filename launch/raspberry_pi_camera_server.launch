@@ -3,6 +3,8 @@
   <arg name="width" default="1920" />
   <arg name="height" default="1080" />
 
+  <rosparam command="load" file="$(find raspberry_pi_camera)/config/configs.yaml" />
+
   <!-- Start the actual detection server -->
   <node name="raspberry_pi_camera_server" pkg="raspberry_pi_camera" type="raspberry_pi_camera_server.py" respawn="false" output="screen">
     <param name="width" type="int" value="$(arg width)"/>
