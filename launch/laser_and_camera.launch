@@ -1,0 +1,8 @@
+<launch>  
+    <!-- import yolo_detection_server.launch -->
+    <include file="$(find raspberry_pi_camera)/launch/raspberry_pi_camera_server.launch"></include>
+    
+    <!-- import yolo_detection_server.launch -->
+    <include file="$(find laser_modul)/launch/laser_modul.launch"></include>
+
+</launch>
