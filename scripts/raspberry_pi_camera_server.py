@@ -15,6 +15,7 @@ import time
 import picamera
 from picamera.array import PiRGBArray
 from fractions import Fraction
+import cv2
 
 ## RaspberryPiCameraServer class
 #
@@ -55,31 +56,21 @@ class RaspberryPiCameraServer:
     goal: bark_msgs/RaspberryPiCameraGoal, action goal, it is an empty message to signal the need for an image (see action definition for further details)
     '''
     camera = picamera.PiCamera()
-    camera.resolution = (self.width, self.height)
-    camera.iso = 100
-    a = Fraction(313, 256)
-    b = Fraction(350, 128)
-    gains = [a, b]
-    time.sleep(2)
-
-    camera.exposure_mode = 'off'
-    camera.awb_mode = 'off'
-    camera.awb_gains = gains
-    camera.shutter_speed = 15000#3000
-    time.sleep(2)
-
-    rawCapture = PiRGBArray(camera)
-    rawCapture.truncate(0) # ez itt valamiért nagyon jó lesz
-    camera.capture(rawCapture, 'bgr')
-    rawCapture.truncate(0) # ez itt valamiért nagyon jó lesz
-
+    time.sleep(0.1) # camera warm up
+    
+    camera.resolution = (1920, 1088)  # it is necessary to give 1088 height to a right image
+    rawCapture = PiRGBArray(camera, size=(1920,1088))
+    camera.capture(rawCapture, 'rgb')
     image = rawCapture.array
-    image = np.reshape(image, (self.height, self.width, 3))
+       
+    image = np.reshape(image, (1088, 1920, 3))
+
+    image = cv2.resize(image, (self.width, self.height), interpolation=cv2.INTER_LINEAR)
+
     result = RaspberryPiCameraResult()
     result.image = self.bridge.cv2_to_imgmsg(image, encoding='bgr8')
-    rawCapture.truncate(0) # ez itt valamiért nagyon jó lesz
+
     camera.close()
-    
     self.server.set_succeeded(result)
 
 if __name__ == '__main__':
